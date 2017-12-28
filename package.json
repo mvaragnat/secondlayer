@@ -9,7 +9,9 @@
   "dependencies": {
     "zeppelin-solidity": "^1.5.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "mocha": "^4.0.1"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
