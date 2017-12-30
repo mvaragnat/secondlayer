@@ -7,16 +7,19 @@ contract GeolocData is Ownable {
   struct Location {
     uint latitude;
     uint longitude;
+    address artist;
   }
 
   Location[] public locations;
 
-  /* mapping (uint => address) public geolocToOwner; */
-  /* mapping (address => uint) public ownerToGeolocs; */
+  mapping (address => uint[]) artistsToGeolocs;
 
   // only the owner of the contract can call this function
   function addLocation(uint _latitude, uint _longitude) public onlyOwner {
-    locations.push(Location(_latitude, _longitude));
+    uint id = locations.push(Location(_latitude, _longitude, owner)) - 1;
+
+    // add the location to the owner's array
+    artistsToGeolocs[owner].push(id);
   }
 
   // public helper, for testing purposes
@@ -25,12 +28,16 @@ contract GeolocData is Ownable {
   }
 
   // public getter, returning the full array of locations
-  /* function getLocations() public view returns (Location[]) {
+  function getLocations() public view returns (Location[]) {
      return locations;
-  } */
+  }
 
-  // getter used by web3
-  function getLocation(uint _index) public view returns (uint, uint) {
-    return (locations[_index].latitude, locations[_index].longitude);
+  function getLocationIdsFromAddress(address _address) public view returns (uint[]) {
+     return artistsToGeolocs[_address];
+  }
+
+  // getter used by web3 for the details, once we know the array of interest
+  function getLocation(uint _index) public view returns (uint latitude, uint longitude, address artist) {
+    return (locations[_index].latitude, locations[_index].longitude, locations[_index].artist);
   }
 }
